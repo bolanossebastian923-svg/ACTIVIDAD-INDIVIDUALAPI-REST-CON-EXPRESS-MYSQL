@@ -2,7 +2,7 @@ const express=require("express")
 const cors=require("cors")
 let mysql=require("mysql2")
 const app=express();
-const PORT=5000
+const PORT=4000
 
 app.use(express.json());
 app.use(cors());
@@ -28,6 +28,11 @@ app.get("/prueba",(req,res)=>{
 
 app.post("/productos",(req,res)=>{
     const {nombre, categoria, precio,cantidad_disponible}=req.body
+
+    if(!nombre || !categoria || !precio || !cantidad_disponible){
+    return res.json({"mensaje":"Todos los campos son obligatorios"})
+}
+    
     conectar.query("INSERT INTO productos(nombre,categoria,precio,cantidad_disponible) VALUES (?,?,?,?)", 
         [nombre,categoria,precio,cantidad_disponible],(error)=>{
             if(error){
@@ -36,8 +41,8 @@ app.post("/productos",(req,res)=>{
             else{
                 return res.json({"mensaje":"producto registrado correctamente "})
             }
-        })
-})
+        });
+});
 
 app.get("/productos",(req,res)=>{
     conectar.query("SELECT * FROM productos",(error,resultado)=>{
